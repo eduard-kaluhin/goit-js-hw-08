@@ -1,36 +1,20 @@
-import { galleryItems } from './gallery-items.js';
-import SimpleLightbox from 'simplelightbox';
+import SimpleLightbox from 'simplelightbox/src/simple-lightbox.js';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { galleryItems } from './gallery-items.js';
 
 const galleryContainer = document.querySelector('.gallery');
 const galleryItemHTML = galleryItems.map(item => `
   <li class="gallery__item">
     <a class="gallery__link" href="${item.original}">
-      <img class="gallery__image" src="${item.preview}" alt="${item.description}" data-source="${item.original}" />
+      <img class="gallery__image" src="${item.preview}" alt="${item.description}" />
     </a>
   </li>
 `);
 galleryContainer.innerHTML = galleryItemHTML.join('');
 
-const gallery = document.querySelector('.gallery');
-gallery.addEventListener('click', event => {
-  event.preventDefault();
-  const clickedElement = event.target;
-  if (clickedElement.tagName !== 'IMG') {
-    return;
-  }
-  const largeImageURL = clickedElement.dataset.source;
-  const target = event.target;
-  const lightbox = new SimpleLightbox(`
-    <img src="${largeImageURL}" alt="${target.alt}" />
-  `);
-  lightbox.open();
-
-  const closeLightboxOnEscape = event => {
-    if (event.key === 'Escape') {
-      lightbox.close();
-      document.removeEventListener('keydown', closeLightboxOnEscape);
-    }
-  };
-  document.addEventListener('keydown', closeLightboxOnEscape);
+const gallery = new SimpleLightbox('.gallery__link', {
+  captionsData: 'alt',
+  captionDelay: 250,
+  captions: true,
+  captionPosition: 'bottom',
 });
